@@ -10,5 +10,6 @@ public class Torre extends Pezzo{
 	}
 	public boolean spostamentoPotenziale (Stato s, int target) {
 		
+            return true;
 	}
 }

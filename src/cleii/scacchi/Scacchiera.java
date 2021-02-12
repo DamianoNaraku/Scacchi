@@ -33,10 +33,18 @@ public class Scacchiera {
 	}
 //Metodo non richiesto che converte la posizione in notazione scacchistica con quella da 0 a 64
 	private int convertitore(int pos) {
-		int rigo = pos/10 - 1;
-		int casella = pos%10 - 1;
+		int rigo = 8 - pos%10;
+		int casella = pos/10 - 1;
 		return rigo*8 + casella;
-	}	
+	}
+//Metodo non richiesto inverso a convertitore, che partendo dalla posizione da 0 a 64 
+	//converte in notazione scacchistica
+	private int convertitoreinverso(int i) {
+		int rigo = i%8;
+		int casella = 7 - i/8;
+		return 11 + rigo*10+casella;
+	}
+	
 //Trova il numero giusto e poi convertitoreinverso lo trasforma nella notazione voluta
 	public int getPos (Pezzo p) {
 		for (int i=0; i<64; i++) {
@@ -46,14 +54,6 @@ public class Scacchiera {
 		}
 		return 0;
 	}
-//Metodo non richiesto inverso a convertitore, che partendo dalla posizione da 0 a 64 
-	//converte in notazione scacchistica
-	private int convertitoreinverso(int i) {
-		int rigo = i/8+1;
-		int casella = i%8+1;
-				return rigo*10+casella;
-	}
-	
 	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder(); //Per avere maggiore efficienza, uso questo oggetto, che
@@ -73,4 +73,19 @@ public class Scacchiera {
 		}
 		return s.toString();  //faccio cosi perche s e uno stringbuilder e invece deve ritornare una stringa
 	}
+        // solo per test
+        public String getPositions(boolean use11_88, boolean doubleInversion){
+                StringBuilder s = new StringBuilder(); 
+                for (int i = 0; i < this.scacchiera.length; i++) {
+                        s.append('|');
+                        if (!use11_88 && i < 10) s.append(' ');
+                        s.append( doubleInversion ? this.convertitore(this.convertitoreinverso(i)) : (use11_88 ? this.convertitoreinverso(i) : i));
+			if (i%8==7) {  //deve andare a capo se arrivo all-ottava casa, ma l-ottava e dove i=7, quindi
+				           //il numero diviso 8 deve dare resto 7 es casa 7: 7/8 da resto 7, 15/8 da 1 resto 7...
+				s.append('|');
+				s.append('\n');
+			}
+                }
+                return s.toString();
+        }
 }

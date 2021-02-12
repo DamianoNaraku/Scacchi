@@ -10,6 +10,6 @@ public class Regina extends Pezzo{
 	}
 	public boolean spostamentoPotenziale (Stato s, int target) {
 
-		
+            return true;
 	}
 }

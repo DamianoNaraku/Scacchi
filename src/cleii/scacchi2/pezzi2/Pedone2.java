@@ -1,15 +1,16 @@
-package cleii.scacchi.pezzi;
+package cleii.scacchi2.pezzi2;
 
-import cleii.scacchi.*;
+import cleii.scacchi2.*;
 
-public class Pedone extends Pezzo {
+public class Pedone2 extends Pezzo2 {
 	
-	public Pedone(boolean p) {
+	public Pedone2(boolean p) {
 		super(p, "p");
 		// TODO Auto-generated constructor stub
 	}
+
 	@Override
-	public boolean spostamentoPotenziale (Stato s, int target) {
+	public boolean spostamentoPotenziale (Stato2 s, int target) {
             int posizione = s.sca.getPos(this);
             int direzione; //se il pezzo e bianco deve andaare avanti quindi controllo con
             //direzione=1, se e nero deve andare "indietro" quindi vedo se puo andare in posizione -1

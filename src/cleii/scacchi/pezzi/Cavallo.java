@@ -10,5 +10,6 @@ public class Cavallo extends Pezzo{
 	}
 	public boolean spostamentoPotenziale (Stato s, int target) {
 		
+            return true;
 	}
 }
