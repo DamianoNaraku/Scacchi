@@ -21,4 +21,6 @@ public abstract class Pezzo {
 	}
 	
 	public abstract boolean spostamentoPotenziale (Stato s, int target);
+	
+
 }

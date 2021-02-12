@@ -1,5 +1,7 @@
 package cleii.scacchi2.pezzi2;
 
+import java.util.ArrayList;
+
 import cleii.scacchi2.*;
 
 public abstract class Pezzo2 {
@@ -22,4 +24,16 @@ public abstract class Pezzo2 {
 	}
 	
 	public abstract boolean spostamentoPotenziale (Stato2 s, int target);
+	
+
+	public abstract ArrayList<Integer> listaSpostamentoPotenziale (Stato2 s);
+	
+
+	// metodi non richiesti, protected perchè deve essere accessibile alle sottoclassi.
+	protected int[] fromPosToCell(int pos) {
+		int pieceColumn = pos / 10;
+		int pieceCell = pos % 10;
+		return new int[] {pieceColumn, pieceCell}; }
+
+	protected int fromCellToPos(int column, int cell) { return column*10 + cell; }
 }
