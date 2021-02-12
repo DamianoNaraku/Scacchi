@@ -37,13 +37,6 @@ public class Scacchiera {
 		int casella = pos/10 - 1;
 		return rigo*8 + casella;
 	}
-//Metodo non richiesto inverso a convertitore, che partendo dalla posizione da 0 a 64 
-	//converte in notazione scacchistica
-	private int convertitoreinverso(int i) {
-		int rigo = i%8;
-		int casella = 7 - i/8;
-		return 11 + rigo*10+casella;
-	}
 	
 //Trova il numero giusto e poi convertitoreinverso lo trasforma nella notazione voluta
 	public int getPos (Pezzo p) {
@@ -54,6 +47,14 @@ public class Scacchiera {
 		}
 		return 0;
 	}
+	//Metodo non richiesto inverso a convertitore, che partendo dalla posizione da 0 a 64 
+	//converte in notazione scacchistica
+	private int convertitoreinverso(int i) {
+		int rigo = i%8;
+		int casella = 7 - i/8;
+		return 11 + rigo*10+casella;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder(); //Per avere maggiore efficienza, uso questo oggetto, che
