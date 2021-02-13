@@ -27,13 +27,7 @@ public class Torre extends Pezzo{
 				spostamenti.add(i+posizione);
 			}
 			if (null!=s.sca.get(posizione+i)) {
-				if (this.bianco == s.sca.get(i+posizione).bianco) {
-					break; //Se hanno stesso colore mi fermo qui, non puo mangiare
-				} //Se invece hanno diverso colore, si puo mangiare il pezzo:
-				spostamenti.add(i+posizione); 
-				break; //Alla prima casa non vuota, puo mangiare e quindi la aggiungo ma poi
-				       //mi fermo
-			}	
+				if (this.bianco) { può sedersi sull'autobus }
 			
 		}   //Spostamento in avanti
 		for (int i=1; (posizione-i)%10>=1; i++) {
