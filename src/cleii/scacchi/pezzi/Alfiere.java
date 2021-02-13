@@ -20,6 +20,20 @@ public class Alfiere extends Pezzo{
 	@Override
 	public ArrayList<Integer> listaSpostamentoPotenziale (Stato s){
 		ArrayList<Integer> spostamenti = new ArrayList<>();
+		int posizione= s.sca.getPos(this);
+			//Spostamento in avanti a destra
+		for (int i=1; (posizione*(i*10)+i)/10<=8 && (posizione*(i*10)+i)%10<=8; i++) {
+			spostamenti.add(posizione*(i*10)+i);
+		}   //Spostamento in avanti a sinistra
+		for (int i=1; (posizione*(i*10)-i)/10>=1 && (posizione*(i*10)-i)%10>=1; i++) {
+			spostamenti.add(posizione*(i*10)-i);
+		}   //Spostamento indietro a sinistra
+		for (int i=1; (posizione*(-i*10)-i)/10>=1 && (posizione*(-i*10)-i)%10<=8; i++) {
+			spostamenti.add(posizione*(-i*10)-i);
+		}   //Spostamento indietro a destra
+		for (int i=1; (posizione*(-i*10)+i)/10<=8 && (posizione*(-i*10)+i)%10<=8; i++) {
+			spostamenti.add(posizione*(-i*10)+i);
+		}
 		return spostamenti;
 	}
 }

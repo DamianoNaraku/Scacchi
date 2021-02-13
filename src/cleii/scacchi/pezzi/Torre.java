@@ -20,6 +20,31 @@ public class Torre extends Pezzo{
 	@Override
 	public ArrayList<Integer> listaSpostamentoPotenziale (Stato s){
 		ArrayList<Integer> spostamenti = new ArrayList<>();
+		int posizione = s.sca.getPos(this);
+			//Spostamento indietro
+		for (int i=1; (i+posizione)%10<=8 ; i++) {
+			if (i==1 || null==s.sca.get(posizione+i)) {
+				spostamenti.add(i+posizione);
+			}
+			if (null!=s.sca.get(posizione+i)) {
+				if (this.bianco == s.sca.get(i+posizione).bianco) {
+					break; //Se hanno stesso colore mi fermo qui, non puo mangiare
+				} //Se invece hanno diverso colore, si puo mangiare il pezzo:
+				spostamenti.add(i+posizione); 
+				break; //Alla prima casa non vuota, puo mangiare e quindi la aggiungo ma poi
+				       //mi fermo
+			}	
+			
+		}   //Spostamento in avanti
+		for (int i=1; (posizione-i)%10>=1; i++) {
+			spostamenti.add(posizione-i);
+		}   //Spostamento a destra
+		for (int i=1; (posizione+(i*10))/10<=8; i++) {
+			spostamenti.add(posizione+(i*10));
+		}   //Spostamento a sinistra
+		for (int i=1; (posizione-(i*10))/10>=1; i++) {
+			spostamenti.add(posizione-(i*10));
+		}
 		return spostamenti;
 	}
 }
