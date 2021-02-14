@@ -1,5 +1,6 @@
 package cleii.scacchi;
 
+import cleii.scacchi2.Partita2;
 
 public class Test {
 
@@ -8,9 +9,9 @@ public class Test {
 		System.out.println(s);
                 
         System.out.println("\nposizioni:\n" + s.getPositions(false, false) + 
-        		"\n\n"+ s.getPositions(true, false)+ "\n\n"+ s.getPositions(false, true));
+        		"\n\n"+ s.getPositions(true, false));
 
-        System.out.println("è stato damiano!!!");
+        new Partita2();
                 
 	}
 

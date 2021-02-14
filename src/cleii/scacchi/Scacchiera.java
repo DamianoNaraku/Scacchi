@@ -1,10 +1,12 @@
 package cleii.scacchi;
+import java.util.ArrayList;
+
 import cleii.scacchi.pezzi.*;
 
 public class Scacchiera {
 	private Pezzo[] scacchiera = new Pezzo [64];
 	
-	Scacchiera() {
+	public Scacchiera() {
 		for (int j=0; j<2; j++) {
 			//Creo bn che dice se e bianco o nero
 			boolean bn=(j==0); //al primo turno j vale 0 e quindi bn e true, al secondo j=1 e allora bn= false
@@ -74,19 +76,36 @@ public class Scacchiera {
 		}
 		return s.toString();  //faccio cosi perche s e uno stringbuilder e invece deve ritornare una stringa
 	}
-        // solo per test
-        public String getPositions(boolean use11_88, boolean doubleInversion){
-                StringBuilder s = new StringBuilder(); 
-                for (int i = 0; i < this.scacchiera.length; i++) {
-                        s.append('|');
-                        if (!use11_88 && i < 10) s.append(' ');
-                        s.append( doubleInversion ? this.convertitore(this.convertitoreinverso(i)) : (use11_88 ? this.convertitoreinverso(i) : i));
-			if (i%8==7) {  //deve andare a capo se arrivo all-ottava casa, ma l-ottava e dove i=7, quindi
-				           //il numero diviso 8 deve dare resto 7 es casa 7: 7/8 da resto 7, 15/8 da 1 resto 7...
-				s.append('|');
+    // solo per test
+    public String getPositions(boolean use11_88, boolean doubleInversion){
+            StringBuilder s = new StringBuilder(); 
+            for (int i = 0; i < this.scacchiera.length; i++) {
+                    s.append('|');
+                    if (!use11_88 && i < 10) s.append(' ');
+                    s.append( doubleInversion ? this.convertitore(this.convertitoreinverso(i)) : (use11_88 ? this.convertitoreinverso(i) : i));
+		if (i%8==7) {  //deve andare a capo se arrivo all-ottava casa, ma l-ottava e dove i=7, quindi
+			           //il numero diviso 8 deve dare resto 7 es casa 7: 7/8 da resto 7, 15/8 da 1 resto 7...
+			s.append('|');
+			s.append('\n');
+		}
+            }
+            return s.toString();
+    }
+
+	public String evidenziaPosizioni(ArrayList<Integer> posizioni, int centro) {
+		StringBuilder s = new StringBuilder();
+		for (int i=0; i<64; i++) {
+			int posizione = this.convertitoreinverso(i);
+			boolean evidenziato = posizioni.contains(posizione);
+			if (posizione == centro) { s.append('X'); }
+			else if (null==this.scacchiera[i]) { s.append( evidenziato ? ' ' : '-'); }
+		    else {
+		    	s.append( evidenziato ? 'o' : this.scacchiera[i].toString());
+		    }
+			if (i%8==7) {
 				s.append('\n');
 			}
-                }
-                return s.toString();
-        }
+		}
+		return s.toString();
+	}
 }

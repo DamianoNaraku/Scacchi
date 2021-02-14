@@ -20,14 +20,33 @@ public abstract class Pezzo {
 	public String toString(){
 		return this.nomepezzo;
 	}
-	
-	ArrayList<Integer> listaSpostamentoPotenziale (Stato s){
+
+	public abstract boolean spostamentoPotenziale (Stato s, int target);
+
+	// Dato che spostamentoPotenziale è uguale per tutte le classi figlie ma deve essere abstract,
+	// faccio cmq un metodo nella classe genitore che poi verra richiamato nel metodo
+	// spostamentoPotenziale di ogni figlia
+	public boolean spostamentoPotenziale2 (Stato s, int target) {
+		/*
+		 * 
+        ArrayList<Integer> listaSpostamenti= listaSpostamentoPotenziale(s);
+        for (int pos: listaSpostamenti) {
+        	if (target==pos) {
+        		return true;
+        	}
+        }
+        return false;*/
+		return this.listaSpostamentoPotenziale(s).contains(target);
+	}
+
+	public ArrayList<Integer> listaSpostamentoPotenziale(Stato s){
 		ArrayList<Integer> tuttiglispostamenti= listaAttacco2(s);
-//Ho preso la lista degli spostamenti totali, da cui ora tolgo quelli delle case non vuote
+// Ho preso la lista degli spostamenti totali, da cui ora tolgo quelli delle case non vuote
 		for (int i=0; i<tuttiglispostamenti.size(); ) {
 			Pezzo target = s.sca.get(tuttiglispostamenti.get(i));
-//Il get esterno dice cosa c'e in quella posizione della scacchiera, invece l'altro get e quello
-//di default dell'arraylist, che prende la casella i dall'arraylist spostamentipotenziali
+			// Il get esterno dice cosa c'è in quella posizione della scacchiera,
+			// invece l'altro get è quello di default dell'arraylist,
+			// che prende la casella i dall'arraylist spostamentipotenziali
 			if (null!=target) {
 				tuttiglispostamenti.remove(i);
 			}
@@ -38,24 +57,16 @@ public abstract class Pezzo {
 		return tuttiglispostamenti;
 	}
 	
-	public abstract boolean spostamentoPotenziale (Stato s, int target);
-	//Dato che spostamentoPotenziale e uguale per tutte le classi figlie ma deve essere abstract,
-	//faccio cmq un metodo nella classe genitore che poi verra richiamato nel metodo
-	//spostamentoPotenziale di ogni figlia
-	protected boolean spostamentoPotenzialeP (Stato s, int target) {
-        ArrayList<Integer> listaSpostamenti= listaAttacco(s);
-        for (int pos: listaSpostamenti) {
-        	if (target==pos) {
-        		return true;
-        	}
-        }
-        return false;
-}
+	public abstract boolean attacco(Stato s, int target);
+	protected boolean attacco2(Stato s, int target) {
+		return this.listaAttacco(s).contains(target);
+	}
+
 	
-	public final ArrayList<Integer> listaAttacco (Stato s){
+	public final ArrayList<Integer> listaAttacco(Stato s){
 	//final perche non bisogna sovrascriverla, altrimenti non escluderebbe piu lo stesso colore
 		return escludistessocolore(listaAttacco2(s), s);
-		} //Ho chiamato listaAttacco2 che prende tutte le case incluse quelle dello stesso
+	} //Ho chiamato listaAttacco2 che prende tutte le case incluse quelle dello stesso
 	//colore del pezzo, poi su questa lista ottenuta si applica escludistessocolore che elimina
 	//dall'array le case che contengono un pezzo non mangiabile poiche dello stesso colore
 	
