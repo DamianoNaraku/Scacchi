@@ -18,7 +18,7 @@ public class Cavallo extends Pezzo{
 	}
 	
 	@Override
-	public ArrayList<Integer> listaSpostamentoPotenziale (Stato s){
+	public ArrayList<Integer> listaAttacco2 (Stato s){
 		ArrayList<Integer> spostamenti = new ArrayList<>();
 		int posizione = s.sca.getPos(this);
 		int spostamentouno=21; //il cavallo puo andare di 20+1 posizioni avanti e indietro

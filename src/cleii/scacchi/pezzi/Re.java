@@ -18,7 +18,7 @@ public class Re extends Pezzo{
 	}
 	
 	@Override
-	public ArrayList<Integer> listaSpostamentoPotenziale (Stato s){
+	public ArrayList<Integer> listaAttacco2 (Stato s){
 		ArrayList<Integer> spostamenti = new ArrayList<>();
 		int posizione= s.sca.getPos(this);
 			//Spostamento indietro diagonale sinistra

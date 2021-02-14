@@ -18,7 +18,7 @@ public class Pedone extends Pezzo {
 	}
 	
 	@Override
-	public ArrayList<Integer> listaSpostamentoPotenziale (Stato s){
+	public ArrayList<Integer> listaAttacco2 (Stato s){
 		ArrayList<Integer> spostamenti = new ArrayList<>();
 		int posizione = s.sca.getPos(this);
         int direzione; //se il pezzo e bianco deve andaare avanti quindi controllo con

@@ -18,21 +18,37 @@ public class Alfiere extends Pezzo{
 	}
 	
 	@Override
-	public ArrayList<Integer> listaSpostamentoPotenziale (Stato s){
+	public ArrayList<Integer> listaAttacco2 (Stato s){
+		int posizione = s.sca.getPos(this);
+		return listaAttacco2 (s, posizione);
+	}
+	
+	public ArrayList<Integer> listaAttacco2 (Stato s, int posizione){
 		ArrayList<Integer> spostamenti = new ArrayList<>();
-		int posizione= s.sca.getPos(this);
 			//Spostamento in avanti a destra
 		for (int i=1; (posizione*(i*10)+i)/10<=8 && (posizione*(i*10)+i)%10<=8; i++) {
 			spostamenti.add(posizione*(i*10)+i);
+			if (null!=s.sca.get(posizione*(i*10)+i)) {
+				break;
+			}
 		}   //Spostamento in avanti a sinistra
 		for (int i=1; (posizione*(i*10)-i)/10>=1 && (posizione*(i*10)-i)%10>=1; i++) {
 			spostamenti.add(posizione*(i*10)-i);
+			if (null!=s.sca.get(posizione*(i*10)-i)) {
+				break;
+			}
 		}   //Spostamento indietro a sinistra
 		for (int i=1; (posizione*(-i*10)-i)/10>=1 && (posizione*(-i*10)-i)%10<=8; i++) {
 			spostamenti.add(posizione*(-i*10)-i);
+			if (null!=s.sca.get(posizione*(-i*10)-i)) {
+				break;
+			}
 		}   //Spostamento indietro a destra
 		for (int i=1; (posizione*(-i*10)+i)/10<=8 && (posizione*(-i*10)+i)%10<=8; i++) {
 			spostamenti.add(posizione*(-i*10)+i);
+			if (null!=s.sca.get(posizione*(-i*10)+i)) {
+				break;
+			}
 		}
 		return spostamenti;
 	}

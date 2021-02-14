@@ -17,27 +17,38 @@ public class Torre extends Pezzo{
             return spostamentoPotenzialeP(s, target);
 	}
 	
-	@Override
-	public ArrayList<Integer> listaSpostamentoPotenziale (Stato s){
-		ArrayList<Integer> spostamenti = new ArrayList<>();
+	@Override	
+	public ArrayList<Integer> listaAttacco2 (Stato s){
 		int posizione = s.sca.getPos(this);
-			//Spostamento indietro
-		for (int i=1; (i+posizione)%10<=8 ; i++) {
-			if (i==1 || null==s.sca.get(posizione+i)) {
-				spostamenti.add(i+posizione);
+		return listaAttacco2 (s, posizione);
+	}	
+
+	public ArrayList<Integer> listaAttacco2 (Stato s, int posizione){
+		ArrayList<Integer> spostamenti = new ArrayList<>();
+		for(int direzione=-1; direzione<2; direzione+=2) {
+			//Spostamento indietro e avanti
+			for (int i=1; (posizione+i*direzione)%10<=8 && (posizione+i*direzione)%10>=1; i++) {
+				int posizionefinale=posizione+i*direzione;
+				if (null==s.sca.get(posizionefinale)) {
+					spostamenti.add(posizionefinale);
+				}
+				if (null!=s.sca.get(posizionefinale)) {
+					spostamenti.add(posizionefinale); 
+					break; //Alla prima casa non vuota, puo mangiare e quindi la aggiungo ma poi
+					       //mi fermo
+				}	
+			}    //Spostamento a destra e sinistra
+			for (int i=1; (posizione+i*direzione*10)/10<=8 && (posizione+i*direzione*10)/10>=1; i++) {
+				int posizionefinale=posizione+i*direzione*10;
+				if (null==s.sca.get(posizionefinale)) {
+					spostamenti.add(posizionefinale);
+				}
+				if (null!=s.sca.get(posizionefinale)) {
+					spostamenti.add(posizionefinale); 
+					break; //Alla prima casa non vuota, puo mangiare e quindi la aggiungo ma poi
+					       //mi fermo
+				}
 			}
-			if (null!=s.sca.get(posizione+i)) {
-				if (this.bianco) { può sedersi sull'autobus }
-			
-		}   //Spostamento in avanti
-		for (int i=1; (posizione-i)%10>=1; i++) {
-			spostamenti.add(posizione-i);
-		}   //Spostamento a destra
-		for (int i=1; (posizione+(i*10))/10<=8; i++) {
-			spostamenti.add(posizione+(i*10));
-		}   //Spostamento a sinistra
-		for (int i=1; (posizione-(i*10))/10>=1; i++) {
-			spostamenti.add(posizione-(i*10));
 		}
 		return spostamenti;
 	}
