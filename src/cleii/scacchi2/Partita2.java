@@ -59,12 +59,25 @@ public class Partita2 {
 				switch (sottocomando) {
 				default: invalidCommand("sotto-comando invalido: " + sottocomando); break;
 					case "spostamenti": case "s":
-						posizioni = p.listaAttacco(this.stato);
-					case "attacchi": case "a":
 						posizioni = p.listaSpostamentoPotenziale(this.stato);
+					case "attacchi": case "a":
+						posizioni = p.listaAttacco(this.stato);
 				}
 				if (null == posizioni) break;
 				System.out.println(this.stato.sca.evidenziaPosizioni(posizioni, from));
+				break;
+			case "forza": case "f":
+				if (comandoArray.length < 3 || comandoArray.length > 4) { invalidCommand("lunghezza comando:" + comandoArray.length); break; }
+				try{
+					from = Integer.parseInt(comandoArray[1]);
+					to = Integer.parseInt(comandoArray[2]);
+					if (comandoArray.length == 4) {
+						promozione = Integer.parseInt(comandoArray[3]);
+						if (promozione < 0 || promozione > 3) throw new NumberFormatException("l'ultimo parametro (promozione) deve essere tra 0 e 3");
+					} else promozione = -1;
+				} catch(NumberFormatException e) { invalidCommand(e.getMessage()); break; }
+				this.stato.forzaMossa(from, to, promozione);
+				System.out.println(this.stato.sca);
 				break;
 			case "scacchiera": case "s":
 				System.out.println(this.stato.sca);
@@ -79,12 +92,12 @@ public class Partita2 {
 						if (promozione < 0 || promozione > 3) throw new NumberFormatException("l'ultimo parametro (promozione) deve essere tra 0 e 3");
 					} else promozione = -1;
 				} catch(NumberFormatException e) { invalidCommand(e.getMessage()); break; }
-				Stato nuovo = stato.simulaSpostamentoOCattura(from, to, promozione);
-				if (null == nuovo) {
+				boolean valida = stato.eseguiMossa(from, to, promozione);
+				if (!valida) {
 					System.err.println("mossa invalida!");
 					break;
 				}
-				this.stato = nuovo;
+				// this.stato = nuovo;
 				System.out.println("Mossa eseguita!\n" + this.stato.sca);
 				break;
 		}
@@ -94,10 +107,12 @@ public class Partita2 {
 		System.out.println(
 		  "attacca *from* *to* *promozione*\n"
 		+ "attacca *from* *to*\n"
+		+ "forza *from* *to* *promozione*\n (forza l'esecuzione di un attacco anche se invalido)"
 		+ "mostra spostamenti *from*\n"
 		+ "mostra attacchi *from*"
-		+ "scacchiera\n"
+		+ "scacchiera (stamp lo stato attuale)\n"
 		+ "a *from* *to* *promozione*\n"
+		+ "f *from* *to* *promozione*\n"
 		+ "m a *from*"
 		+ "m s *from*"
 		+ "s\n");
