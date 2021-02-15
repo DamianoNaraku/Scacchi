@@ -9,6 +9,7 @@ public class Partita {
 	public Scacchiera mosse;
 	public boolean incorso, vittoriabianco, vittorianero, patta;
 	private ArrayList<Integer> listamosse; //per controllare patta per tripliceripetizione
+	todo: controlla quando copi lo stato che setti tutte le nuove variabili
 	
 	public Partita() {
 		s= new Stato();

@@ -18,6 +18,7 @@ public class Partita2 {
 
 	private void startCommandListener() {
 		Scanner s = new Scanner(System.in);
+		
 		System.out.println("Scrivi un comando tra:");
 		printCommandList();
 		while (true) {
