@@ -141,10 +141,12 @@ public class Scacchiera {
 			if (posizione == centro) { s.append('X'); }
 			else if (null==this.scacchiera[i]) { s.append( evidenziato ? ' ' : '-'); }
 		    else {
-		    	s.append( evidenziato ? 'o' : this.scacchiera[i].toString());
+		    	s.append( evidenziato ? '°' : this.scacchiera[i].toString());
 		    }
 			if (i%8==7) {
 				s.append('\n');
+			} else {
+				s.append('|');
 			}
 		}
 		return s.toString();

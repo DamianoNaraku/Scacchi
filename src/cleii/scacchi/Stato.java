@@ -32,7 +32,7 @@ public class Stato {
 		this.listamosse= new ArrayList<Integer>(s.listamosse);
 	}
 	
-	boolean sottoAttacco (int pos, boolean white) {
+	public boolean sottoAttacco (int pos, boolean white) {
 		Pezzo corrente= this.sca.get(pos);
 		if (corrente.bianco==white) {
 			return false; //se la casa e occupata da un pezzo dello stesso colore e falso
@@ -53,7 +53,7 @@ public class Stato {
 		return false;
 	}
 	
-	boolean scacco () {
+	public boolean scacco () {
 		int pos;
 		if(turno) {//se turno e true cioe e il turno del bianco prendo la posizione del re bianco
 			pos= this.sca.getPos(rebianco);
@@ -64,14 +64,14 @@ public class Stato {
 		return sottoAttacco(pos, turno); 
 	}
 	
-	boolean scaccoMatto () {
+	public boolean scaccoMatto () {
 		if (!this.scacco()) {
 			return false;
 		}
 		return this.salvataggiofallito();
 	}	
 	
-	boolean stallo () {
+	public boolean stallo () {
 		if (this.scacco()) {
 			return false;
 		}
@@ -79,7 +79,7 @@ public class Stato {
 	}
 	
 	//Metodo aggiuntivo che controlla se e' sicuro che nessun pezzo puo salvare il re
-	boolean salvataggiofallito () {
+	private boolean salvataggiofallito () {
 		ArrayList<Integer> pezzigiocatore= this.sca.pezzidelgiocatore(turno);
 		for (int posizione: pezzigiocatore) {
 			Pezzo attuale= this.sca.get(posizione);
@@ -105,13 +105,14 @@ public class Stato {
 		return simulazione;
 	}
 	
-	Stato simulaSpostamentoOCattura (int from, int to) {
+	public Stato simulaSpostamentoOCattura (int from, int to) {
 		return simulaSpostamentoOCattura(from, to, 0);
 	}
 	
-	boolean mossaValida (int from, int to, int promozione) {
+	private boolean mossaValida (int from, int to, int promozione) {
 		Pezzo corrente = this.sca.get(from);
-		if (null==corrente) {
+		// se il pezzo non esiste o non e del giocatore di turno
+		if (null==corrente || this.turno != corrente.bianco) {
 			return false;
 		}
 		ArrayList<Integer> attacchipossibili = corrente.listaAttacco(this);
@@ -131,19 +132,25 @@ da fare e se promozione e un input valido cioe da 0 a 3. Il controllo sarebbe co
 		return true;
 	}
 	
-	boolean mossaValida (int from, int to) {
+	private boolean mossaValida (int from, int to) {
 		return mossaValida(from, to, 0);
 	}
 	
-	boolean eseguiMossa (int from, int to, int promozione) {
-		if (mossaValida(from, to, promozione)) {
-			
-			this.sca.set(from, to, promozione);
+	public boolean eseguiMossa (int from, int to, int promozione) {
+		if (!mossaValida(from, to, promozione)) {
+			return false;
 		}
-		return mossaValida(from, to, promozione);
+		this.sca.set(from, to, promozione);
+		this.turno = !this.turno;
+		return true;
 	}
 	
 	boolean eseguiMossa (int from, int to) {
 		return eseguiMossa(from, to, 0);
+	}
+	
+	// per test
+	public void forzaMossa(int from, int to, int promozione) {
+		this.sca.set(from, to, promozione);
 	}
 }
