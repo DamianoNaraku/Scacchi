@@ -8,16 +8,15 @@ public class Partita {
 	public Stato s;
 	public Scacchiera mosse;
 	public boolean incorso, vittoriabianco, vittorianero, patta;
-	private ArrayList<Integer> listamosse; //per controllare patta per tripliceripetizione
-	todo: controlla quando copi lo stato che setti tutte le nuove variabili
+	public ArrayList<Stato> listamosse; //per controllare patta per tripliceripetizione
 	
 	public Partita() {
-		s= new Stato();
-		incorso= true;
-		vittoriabianco= false;
-		vittorianero= false;
-		patta= false;
-		listamosse= new ArrayList<Integer>();
+		this.s= new Stato();
+		this.incorso= true;
+		this.vittoriabianco= false;
+		this.vittorianero= false;
+		this.patta= false;
+		this.listamosse= new ArrayList<Stato>();
 	}
 	
 	public void eseguiMossa (int from, int to, int promozione) throws EccezioneMossa {
@@ -25,12 +24,16 @@ public class Partita {
 			return;
 		}
 		// eseguimossa non la esegue se la mossa non e valida, altrimenti la esegue e non serve fare altro
-		if (!s.eseguiMossa(from, to, promozione)) { // esegue sia il controllo che l'esecuzione della mossa
+		if (!s.eseguiMossa(from, to, promozione)) {//esegue sia il controllo che l'esecuzione della mossa
 			throw new EccezioneMossa();
 		}
 		else {
-			// la mossa e stata eseguita e la salvo tra le mosse eseguite
-			listamosse.add(from * 100*100 + to*100 + promozione);
+			//Aggiorno la lista degli stati
+			listamosse.add(new Stato(this.s)); //salvo copie dello stato corrente
+			//Ora controlliamo se c'e' patta per triplice ripetizione
+			if (listamosse.size()>=6) {//le prime 6 mosse non possono mai generare patta per triplice ripet
+				if ()
+			}
 		}
 	}
 	

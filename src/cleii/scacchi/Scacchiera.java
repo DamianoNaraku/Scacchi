@@ -163,13 +163,16 @@ public class Scacchiera {
 		}
 		return s.toString();  //faccio cosi perche s e uno stringbuilder e invece deve ritornare una stringa
 	}
-    // solo per test
-    public String getPositions(boolean use11_88, boolean doubleInversion){
+ 
+//Non richiesto, serve per vedere se i numeri sono convertiti in "base 8" (boolean inbase8) e
+//poi se e stato riconvertito con convertitoreinverso (boolean doppiaconversione)
+//Serve anche per stampare il numero di caselle in entrambe le coordinate
+    public String getPositions(boolean inbase8, boolean doppiaconversione){
             StringBuilder s = new StringBuilder(); 
             for (int i = 0; i < this.scacchiera.length; i++) {
                     s.append('|');
-                    if (!use11_88 && i < 10) s.append(' ');
-                    s.append( doubleInversion ? this.convertitore(this.convertitoreinverso(i)) : (use11_88 ? this.convertitoreinverso(i) : i));
+                    if (!inbase8 && i < 10) s.append(' ');
+                    s.append( doppiaconversione ? this.convertitore(this.convertitoreinverso(i)) : (inbase8 ? this.convertitoreinverso(i) : i));
 		if (i%8==7) {  //deve andare a capo se arrivo all-ottava casa, ma l-ottava e dove i=7, quindi
 			           //il numero diviso 8 deve dare resto 7 es casa 7: 7/8 da resto 7, 15/8 da 1 resto 7...
 			s.append('|');
@@ -179,6 +182,8 @@ public class Scacchiera {
             return s.toString();
     }
 
+//Visualizza sulla scacchiera le posizioni dell'array, non richiesto ma utile per verificare
+ //la correttezza di altre cose
 	public String evidenziaPosizioni(ArrayList<Integer> posizioni, int centro) {
 		StringBuilder s = new StringBuilder();
 		for (int i=0; i<64; i++) {

@@ -6,7 +6,8 @@ import cleii.scacchi.Stato;
 public abstract class Pezzo {
 	public final boolean bianco; // final perche non deve essere modificato
 	public String nomepezzo;
-	public boolean estatomosso;
+	public boolean estatomosso; //per pedone, re e torre serve vedere se sono gia stati spostati
+	
 	public Pezzo(boolean p, String nome){
 		this.bianco=p;
 		this.estatomosso = false;
