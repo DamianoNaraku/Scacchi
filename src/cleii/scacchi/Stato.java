@@ -10,9 +10,10 @@ public class Stato {
 	//no perche sto dicendo che non puo creare una nuova scacchiera, anche se i valori al suo
 	//interno possono ancora cambiare, per questo final in questo caso va bene
 	//(* rendere costante il contenuto avrei dovuto fare final sulle singole variabili di scacchiera)
-	private boolean turno; //quando tocca al bianco e true, al nero false
+	public boolean turno; //quando tocca al bianco e true, al nero false
 	private boolean arroccobianco, arrocconero, enpassantbianco, enpassantnero;
 	private ArrayList<Integer> listamosse; //per controllare patta per tripliceripetizione
+	public Partita partita;
 	
 	public Stato(){
 		sca= new Scacchiera();
@@ -30,6 +31,7 @@ public class Stato {
 		this.enpassantbianco= s.enpassantbianco;
 		this.enpassantnero= s.enpassantnero;
 		this.listamosse= new ArrayList<Integer>(s.listamosse);
+		this.partita= new Partita();
 	}
 	
 	boolean sottoAttacco (int pos, boolean white) {
@@ -68,13 +70,22 @@ public class Stato {
 		if (!this.scacco()) {
 			return false;
 		}
+		if(turno) { //Aggiorno vittoriabianco e vittorianero e faccio terminare la partita
+			this.partita.vittoriabianco=true;
+		}
+		else {
+			this.partita.vittorianero=true;
+		}
+		this.partita.incorso= false; //Col matto la partita si chiude, non e piu in corso
 		return this.salvataggiofallito();
 	}	
 	
 	boolean stallo () {
 		if (this.scacco()) {
 			return false;
-		}
+		} 
+		this.partita.patta= true;//Con lo stallo e patta, e la partita non e piu in corso, termina
+		this.partita.incorso= false;
 		return this.salvataggiofallito();
 	}
 	
