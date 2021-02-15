@@ -61,7 +61,11 @@ public class Pedone extends Pezzo {
 		if (posizione / 10 != 8 && null != s.sca.get(posizione + direzione + 10)) {
 			spostamenti.add(posizione + direzione + 10);
 		}
-		// Spostamento en passant
+// Spostamento en passant: quando si sposta il pedone si controlla se c'e' un pedone avversario
+//che potrebbe teoricamente mangiare enpassant, e si salva nello stato la sua
+//identita (in enpassantvittima), altrimenti se la mossa del turno non genera questa opportunita
+//enpassantvittima rimane o torna falso, cosi se non e mangiato nel turno giusto non puo piu
+//essere mangiato
 		if (null != s.enpassantvittima && this.bianco != s.enpassantvittima.bianco){
 			int possinistra = posizione - 10;
 			int posdestra = posizione + 10;
@@ -69,7 +73,7 @@ public class Pedone extends Pezzo {
 			if (possinistra/10 >= 10) sinistro = s.sca.get(possinistra);
 			if (posdestra/10 <= 80) destro = s.sca.get(posdestra);
 			
-			// se il pedone su cui si puo fare enpassant e affiamco a questo, allora posso farlo
+			// se il pedone su cui si puo fare enpassant e affianco a questo, allora posso farlo
 			if (sinistro == s.enpassantvittima) {
 				spostamenti.add(possinistra);
 			}

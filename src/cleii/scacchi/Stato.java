@@ -14,6 +14,7 @@ public class Stato {
 	private boolean arroccobianco, arrocconero, enpassantbianco, enpassantnero;
 	public Partita partita;
 	public Pedone enpassantvittima;
+	private int turnisenzacattura; //per vedere se si puo fare patta per 50 turni senza catture
 	
 	public Stato(){
 		sca= new Scacchiera();
@@ -22,13 +23,14 @@ public class Stato {
 	}
 	
 //Costruttore aggiunto da me per creare una copia dello stato, da usare per simulaspostamentoocattura
-	private Stato(Stato s) {
+	public Stato(Stato s) {
 		this.sca= new Scacchiera(s.sca);
 		this.turno= s.turno;
 		this.arroccobianco= s.arroccobianco;
 		this.arrocconero= s.arrocconero;
 		this.enpassantbianco= s.enpassantbianco;
 		this.enpassantnero= s.enpassantnero;
+		this.turnisenzacattura= 0;
 	}
 	
 	public boolean sottoAttacco (int pos, boolean white) {
@@ -152,13 +154,17 @@ da fare e se promozione e un input valido cioe da 0 a 3. Il controllo sarebbe co
 			System.err.println("Stato.esegui mossa invalido");
 			return false;
 		}
+				
+		//Pezzo per controllare se c'e' patta per 50 mosse senza catture
+		Pezzo bersaglio= this.sca.get(to); //per tenere memoria della casa bersaglio: se contiene
+		boolean casapiena= (null!=bersaglio); //un pezzo vuol dire che lo spostamento genera una cattura
+           
 		this.sca.set(from, to, promozione, simulazione);
 		Pezzo mosso = this.sca.get(to);
-
+		
 		// verifico se la mossa ha generato le condizioni per l'avversario di fare en passant
-		// se il pezzo è un pedone spostato di 2 case
+		// se il pezzo e un pedone spostato di 2 case
 		if (mosso instanceof Pedone && Math.abs(from - to) == 2) {
-			int posizioneintermedia = (from + to) / 2;
 			int asinistra = to - 10;
 			int adestra = to + 10;
 			Pezzo nemicosinistro = null, nemicodestro = null;
@@ -170,13 +176,25 @@ da fare e se promozione e un input valido cioe da 0 a 3. Il controllo sarebbe co
 				this.enpassantbianco = mosso.bianco;
 				this.enpassantnero = !mosso.bianco;
 			}
-		} else {
-			// se viene spostato un altro pezzo o non di 2 case si perde la possibilita di enpassant
+		} else {// se viene spostato un altro pezzo o non di 2 case si perde la possibilita di enpassant
 			this.enpassantbianco = false;
 			this.enpassantnero = false;
 			this.enpassantvittima = null;
 		}
-		this.turno = !this.turno;
+		
+		
+		if (mosso instanceof Pedone || casapiena) {//se il pezzo mosso e' un pedone o c'e stata cattura 
+			turnisenzacattura=0; //in una casa dove c'era un pezzo (piena), azzerro turnisenzacattura
+		}
+		else {
+			turnisenzacattura++; //altrimenti aumento il conteggio
+		}
+		
+		if (turnisenzacattura>=50) {
+			this.partita.patta= true;
+		}
+		
+		this.turno = !this.turno; //cambio da turno del bianco a turno del nero e viceversa
 		return true;
 	}
 
@@ -186,9 +204,5 @@ da fare e se promozione e un input valido cioe da 0 a 3. Il controllo sarebbe co
 	public boolean eseguiMossa (int from, int to) {
 		return eseguiMossa(from, to, 0);
 	}
-	
-	// per test
-	public void forzaMossa(int from, int to, int promozione) {
-		this.sca.set(from, to, promozione, false);
-	}
+
 }

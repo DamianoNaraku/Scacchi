@@ -50,7 +50,6 @@ public class Re extends Pezzo{
 		if ((posizione+9)%10>=1 && (posizione+9)/10<=8) {
 			spostamenti.add(posizione+9);
 		}
-		
 		// se il re si e spostato non ho bisogno di controllare e aggiungere l'arrocco agli spostamenti
 		if (this.estatomosso) return spostamenti;
 		System.out.println("controlloarrocco:");
@@ -62,13 +61,15 @@ public class Re extends Pezzo{
 		// prendo le mie torri se sono alle loro posizioni iniziali
 		Pezzo torrevicina = s.sca.get(posizionetorrevicina);
 		Pezzo torrelontana = s.sca.get(posizionetorrelontana);
-		System.out.println("controlloarrocco, pos torri:" + posizionetorrevicina + "," + posizionetorrelontana);
+		System.out.println("controlloarrocco, pos torri:" + posizionetorrevicina + "," 
+		+ posizionetorrelontana);
 		System.out.println("controlloarrocco, torri:" + torrevicina + "," + torrelontana);
 		boolean cisonopezziinmezzo = false;
 		// quelle che sono nella posizione iniziale e non si sono mosse possono fare arrocco
 		if (null != torrevicina && torrevicina instanceof Torre && !torrevicina.estatomosso) {
 			// controllo se ci sono pezzi tra la posizione de re e della torre vicina
-			for (int posintermedia = posizione + 10; posintermedia < posizionetorrevicina; posintermedia+=10) {
+			for (int posintermedia = posizione + 10; posintermedia < posizionetorrevicina; 
+					posintermedia+=10) {
 				if ( null != s.sca.get(posintermedia) ) {
 					cisonopezziinmezzo = true;
 					break;
