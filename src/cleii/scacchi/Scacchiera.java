@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import cleii.scacchi.pezzi.*;
 
 public class Scacchiera {
-	private Pezzo[] scacchiera = new Pezzo [64];
+	private Pezzo[] scacchiera;
 	
 	public Scacchiera() {
+		this.scacchiera= new Pezzo[64];
 		for (int j=0; j<2; j++) {
 			//Creo bn che dice se e bianco o nero
 			boolean bn=(j==0); //al primo turno j vale 0 e quindi bn e true, al secondo j=1 e allora bn= false
@@ -28,6 +29,24 @@ public class Scacchiera {
 			}
 		}
 	}
+	
+	public Scacchiera(Scacchiera s) {
+		this.scacchiera= new Pezzo[64];
+		for (int i=0; i<64; i++) {
+			this.scacchiera[i]=s.scacchiera[i];
+		}
+	}
+	
+	//Metodo non richiesto che uso per controllare dove sono i pezzi di ogni giocatore
+	public ArrayList<Integer> pezzidelgiocatore (boolean bianco){
+		ArrayList<Integer> pezzi= new ArrayList<Integer>();
+		for (int i=0; i<scacchiera.length; i++) {
+			if (null!=scacchiera[i] && scacchiera[i].bianco==bianco) {
+				pezzi.add(convertitoreinverso(i));
+			}
+		}
+		return pezzi;
+	} 
 	
 	public Pezzo get (int pos) {	//richiama il metodo convertitore che trasforma da notazione numerica
 		//a quella dell-array con caselle da 0 a 64
@@ -55,6 +74,28 @@ public class Scacchiera {
 		int rigo = i%8;
 		int casella = 7 - i/8;
 		return 11 + rigo*10+casella;
+	}
+	
+	//Metodo non richiesto che modifica la scacchiera
+	public void set(int partenza, int arrivo, int promozione) {
+		Pezzo attuale= this.get(partenza);
+		if (null==attuale) {
+			return;
+		}
+		partenza=convertitore(partenza);
+		arrivo=convertitore(arrivo);
+		scacchiera[partenza]=null;
+		if (attuale instanceof Pedone && (arrivo%10==1 || arrivo%10==8)) {
+			switch(promozione) {//Caso in cui ci sia la promozione del pedone
+//Prima vede il colore di attuale (con attuale.bianco), solo dopo gli da il nuovo valore quindi
+//non ci sono problemi
+			case 0: attuale = new Regina(attuale.bianco); break;
+			case 1: attuale = new Cavallo(attuale.bianco); break;
+			case 2: attuale = new Alfiere(attuale.bianco); break;
+			case 3: attuale = new Torre(attuale.bianco); break;
+			}
+		}
+		scacchiera[arrivo]=attuale;
 	}
 	
 	@Override

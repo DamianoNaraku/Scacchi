@@ -8,7 +8,13 @@ public class Re extends Pezzo{
 
 	public Re(boolean p) {
 		super(p, "k");
-		// TODO Auto-generated constructor stub
+//Setto i re bianco e nero cosi potro prendere la loro posizione:
+		if(p) {
+			Stato.rebianco= this;
+		}
+		else {
+			Stato.renero= this;
+		}
 	}
 
 	// implementazioni di metodi abstract ma implementati nella superclasse sotto diverso nome 

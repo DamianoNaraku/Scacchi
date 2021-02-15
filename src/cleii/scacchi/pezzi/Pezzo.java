@@ -28,14 +28,14 @@ public abstract class Pezzo {
 	// spostamentoPotenziale di ogni figlia
 	public boolean spostamentoPotenziale2 (Stato s, int target) {
 		/*
-		 * 
+		 * Senza contains:
         ArrayList<Integer> listaSpostamenti= listaSpostamentoPotenziale(s);
         for (int pos: listaSpostamenti) {
         	if (target==pos) {
         		return true;
         	}
         }
-        return false;*/
+        return false;   Con contains, che fa in automatico quanto sopra:*/ 
 		return this.listaSpostamentoPotenziale(s).contains(target);
 	}
 
@@ -58,6 +58,8 @@ public abstract class Pezzo {
 	}
 	
 	public abstract boolean attacco(Stato s, int target);
+//Anche qui si puo fare una classe che fa quello che dovrebbe fare attacco, perche e uguale per 
+	//ogni pezzo
 	protected boolean attacco2(Stato s, int target) {
 		return this.listaAttacco(s).contains(target);
 	}

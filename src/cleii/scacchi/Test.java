@@ -12,7 +12,7 @@ public class Test {
         		"\n\n"+ s.getPositions(true, false));
 
         new Partita2();
-                
+        
 	}
 
 }
