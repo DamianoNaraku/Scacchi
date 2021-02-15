@@ -6,8 +6,10 @@ import cleii.scacchi.Stato;
 public abstract class Pezzo {
 	public final boolean bianco; // final perche non deve essere modificato
 	public String nomepezzo;
+	public boolean estatomosso;
 	public Pezzo(boolean p, String nome){
 		this.bianco=p;
+		this.estatomosso = false;
 		if(this.bianco) { //Crea anche la stringa che dice come si chiama il pezzo
 			this.nomepezzo=nome;
 		}

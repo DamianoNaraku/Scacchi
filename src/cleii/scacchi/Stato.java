@@ -12,14 +12,13 @@ public class Stato {
 	//(* rendere costante il contenuto avrei dovuto fare final sulle singole variabili di scacchiera)
 	public boolean turno; //quando tocca al bianco e true, al nero false
 	private boolean arroccobianco, arrocconero, enpassantbianco, enpassantnero;
-	private ArrayList<Integer> listamosse; //per controllare patta per tripliceripetizione
 	public Partita partita;
+	public Pedone enpassantvittima;
 	
 	public Stato(){
 		sca= new Scacchiera();
 		turno= true; //all'inizio tocca al bianco che e true
-		arroccobianco= arrocconero= enpassantbianco= enpassantnero= false;
-		listamosse= new ArrayList<Integer>();
+		arroccobianco= arrocconero= enpassantbianco= enpassantnero= true; // possono arroccare e fare enpassant
 	}
 	
 //Costruttore aggiunto da me per creare una copia dello stato, da usare per simulaspostamentoocattura
@@ -30,8 +29,6 @@ public class Stato {
 		this.arrocconero= s.arrocconero;
 		this.enpassantbianco= s.enpassantbianco;
 		this.enpassantnero= s.enpassantnero;
-		this.listamosse= new ArrayList<Integer>(s.listamosse);
-		this.partita= new Partita();
 	}
 	
 	public boolean sottoAttacco (int pos, boolean white) {
@@ -111,8 +108,9 @@ public class Stato {
 			return null;	
 			}	
 		Stato simulazione= new Stato(this);
-		
-		simulazione.eseguiMossa(from, to, promozione);
+		// true alla fine perche sto simulando e non devo settare "estatospostato" dentro il pezzo
+		// vedere set dentro scacchiere per chiarimento
+		simulazione.eseguiMossa(from, to, promozione, true);
 		return simulazione;
 	}
 	
@@ -124,10 +122,12 @@ public class Stato {
 		Pezzo corrente = this.sca.get(from);
 		// se il pezzo non esiste o non e del giocatore di turno
 		if (null==corrente || this.turno != corrente.bianco) {
+			System.err.println("non e il turno di quel giocatore o il pezzo non esiste");
 			return false;
 		}
 		ArrayList<Integer> attacchipossibili = corrente.listaAttacco(this);
 		if (!attacchipossibili.contains(to)) {
+			System.err.println("Stato.mossaValida: casella non raggiungibile");
 			return false;
 		}
 /*Ora dovremmo fare il controllo se il pedone puo promuovere, ma in effetti non serve perche
@@ -138,7 +138,6 @@ da fare e se promozione e un input valido cioe da 0 a 3. Il controllo sarebbe co
 			if(promozione>3 || promozione<0) {
 				throw new IllegalArgumentException("Promozione deve essere un num da 0 a 4.");
 			}
-			return false;
 		}
 		return true;
 	}
@@ -146,22 +145,50 @@ da fare e se promozione e un input valido cioe da 0 a 3. Il controllo sarebbe co
 	private boolean mossaValida (int from, int to) {
 		return mossaValida(from, to, 0);
 	}
+
 	
-	public boolean eseguiMossa (int from, int to, int promozione) {
+	private boolean eseguiMossa (int from, int to, int promozione, boolean simulazione) {
 		if (!mossaValida(from, to, promozione)) {
+			System.err.println("Stato.esegui mossa invalido");
 			return false;
 		}
-		this.sca.set(from, to, promozione);
+		this.sca.set(from, to, promozione, simulazione);
+		Pezzo mosso = this.sca.get(to);
+
+		// verifico se la mossa ha generato le condizioni per l'avversario di fare en passant
+		// se il pezzo è un pedone spostato di 2 case
+		if (mosso instanceof Pedone && Math.abs(from - to) == 2) {
+			int posizioneintermedia = (from + to) / 2;
+			int asinistra = to - 10;
+			int adestra = to + 10;
+			Pezzo nemicosinistro = null, nemicodestro = null;
+			if (asinistra/10 >= 10) nemicosinistro = this.sca.get(asinistra);
+			if (adestra/10 <= 80) nemicodestro = this.sca.get(adestra);
+			if (null != nemicosinistro && nemicosinistro instanceof Pedone
+				|| null != nemicodestro && nemicodestro instanceof Pedone) {
+				this.enpassantvittima = ((Pedone)mosso);
+				this.enpassantbianco = mosso.bianco;
+				this.enpassantnero = !mosso.bianco;
+			}
+		} else {
+			// se viene spostato un altro pezzo o non di 2 case si perde la possibilita di enpassant
+			this.enpassantbianco = false;
+			this.enpassantnero = false;
+			this.enpassantvittima = null;
+		}
 		this.turno = !this.turno;
 		return true;
 	}
-	
-	boolean eseguiMossa (int from, int to) {
+
+	public boolean eseguiMossa (int from, int to, int promozione) {
+		return this.eseguiMossa(from, to, promozione, false);
+	}
+	public boolean eseguiMossa (int from, int to) {
 		return eseguiMossa(from, to, 0);
 	}
 	
 	// per test
 	public void forzaMossa(int from, int to, int promozione) {
-		this.sca.set(from, to, promozione);
+		this.sca.set(from, to, promozione, false);
 	}
 }

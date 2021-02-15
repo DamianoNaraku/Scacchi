@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import cleii.scacchi.*;
 
 public class Pedone extends Pezzo {
-	private boolean primamossa; // Servira per vedere se puo fare lo spostamento di 2 caselle,
-	// che si puo fare solo nella prima mossa
 
 	public Pedone(boolean p) {
 		super(p, "p");
-		primamossa = false; // all'inizio primamossa e falso perche non l'ha ancora fatta
 	}
 
 	// implementazioni di metodi abstract ma implementati nella superclasse sotto
@@ -46,7 +43,7 @@ public class Pedone extends Pezzo {
 			spostamenti.add(posizione + direzione);
 		}
 		// Spostamento di due caselle in avanti alla partenza
-		if (this.primamossa == false && null == s.sca.get(posizione + direzione + direzione)
+		if (this.estatomosso == false && null == s.sca.get(posizione + direzione + direzione)
 				&& null == s.sca.get(posizione + direzione)) {
 			// direzione va fatta 2 volte perche vedo se e libera sia la casella davanti a
 			// lui,
@@ -64,7 +61,22 @@ public class Pedone extends Pezzo {
 		if (posizione / 10 != 8 && null != s.sca.get(posizione + direzione + 10)) {
 			spostamenti.add(posizione + direzione + 10);
 		}
-		// Spostamento an passant: todo
+		// Spostamento en passant
+		if (null != s.enpassantvittima && this.bianco != s.enpassantvittima.bianco){
+			int possinistra = posizione - 10;
+			int posdestra = posizione + 10;
+			Pezzo sinistro = null, destro = null;
+			if (possinistra/10 >= 10) sinistro = s.sca.get(possinistra);
+			if (posdestra/10 <= 80) destro = s.sca.get(posdestra);
+			
+			// se il pedone su cui si puo fare enpassant e affiamco a questo, allora posso farlo
+			if (sinistro == s.enpassantvittima) {
+				spostamenti.add(possinistra);
+			}
+			if (destro == s.enpassantvittima) {
+				spostamenti.add(possinistra);
+			}
+		}
 		return spostamenti;
 	}
 }

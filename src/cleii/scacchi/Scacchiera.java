@@ -22,8 +22,8 @@ public class Scacchiera {
 				case 0: case 7: scacchiera[i+k]= new Torre(bn); break;
 				case 1: case 6: scacchiera[i+k]= new Cavallo(bn); break;
 				case 2: case 5: scacchiera[i+k]= new Alfiere(bn); break;
-				case 3: scacchiera[i+k]= new Re(bn); break;
-				case 4: scacchiera[i+k]= new Regina(bn); break;
+				case 3: scacchiera[i+k]= new Regina(bn); break;
+				case 4: scacchiera[i+k]= new Re(bn); break;
 				default: scacchiera[i+p]= new Pedone(bn); break;
 				}
 			}
@@ -77,15 +77,15 @@ public class Scacchiera {
 	}
 	
 	//Metodo non richiesto che modifica la scacchiera
-	public void set(int partenza, int arrivo, int promozione) {
-		Pezzo attuale= this.get(partenza);
+	public void set(int partenza0, int arrivo0, int promozione, boolean simulazione) {
+		Pezzo attuale= this.get(partenza0);
 		if (null==attuale) {
 			return;
 		}
-		partenza=convertitore(partenza);
-		arrivo=convertitore(arrivo);
+		int partenza=convertitore(partenza0);
+		int arrivo=convertitore(arrivo0);
 		scacchiera[partenza]=null;
-		if (attuale instanceof Pedone && (arrivo%10==1 || arrivo%10==8)) {
+		if (attuale instanceof Pedone && (arrivo0%10==1 || arrivo0%10==8)) {
 			switch(promozione) {//Caso in cui ci sia la promozione del pedone
 //Prima vede il colore di attuale (con attuale.bianco), solo dopo gli da il nuovo valore quindi
 //non ci sono problemi
@@ -95,7 +95,53 @@ public class Scacchiera {
 			case 3: attuale = new Torre(attuale.bianco); break;
 			}
 		}
+		Torre arroccoeventuale = null;
+		int posizionetorre = 0;
+		// se il pezzo mosso e un re che si sposta orizzontalmente di 2 caselle allora e arrocco e devo
+		// spostare anche la torre verso cui sta arroccando
+		// se arrivo a chiamare questa funzione allora la mossa e valida per forza
+		// quindi posso saltere i controlli sull'arrocco
+		System.out.println("spostamento di:" + Math.abs(partenza0 - arrivo0) + " e re?" + (attuale instanceof Re));
+		if (attuale instanceof Re && Math.abs(partenza0 - arrivo0) >= 20) {
+			System.out.println("arrocco eseguito");
+			// se mi sto spostando a sinistra devo prendere la torre più a sinistra
+			// che ha la stessa unita del re ma ha "1" come decina, altrimenti l'altra ha "8"
+			if (partenza0 - arrivo0 > 0) {
+				posizionetorre = 10 + partenza0 % 10;
+			} else posizionetorre = 80 + partenza0 % 10;
+			arroccoeventuale = (Torre) this.get(posizionetorre);
+		}
+		if (!simulazione) {
+			attuale.estatomosso = true;
+			if (null != arroccoeventuale) arroccoeventuale.estatomosso = true;
+		}
+		// se c'e stato arrocco devo spostare anche la torre
+		if (null != arroccoeventuale) {
+			int vecchiaposizionetorre = posizionetorre;
+			if (posizionetorre / 10 == 1) {
+				posizionetorre += 30; // arrocco lungo da posizioni 11 o 18
+				// oppure: arrivo + 10 spostamento rispetto al re al suo fianco, equivalente
+			}
+			else {
+				posizionetorre -= 20; // arrocco corto da posizioni 81 o 88
+			}
+			scacchiera[convertitore(posizionetorre)]=arroccoeventuale;
+			scacchiera[convertitore(vecchiaposizionetorre)] = null;
+		}
+		// se c'e stato enpassant devo eliminare il pedone mangiato
+		// c'e stato en passant se: si e mosso un pedone casa vuota
+		// e si ritroverebbe un pezzo nemico alle spalle in una mossa valida
+		// in quel caso il pezzo alle spalle e stato mangiato per enpassant
+		if (attuale instanceof Pedone && null == this.scacchiera[arrivo]) {
+			// il pezzo mangiato e nella casa con unita (rigo) di partenza e decina(colonna) di arrivo
+			int posizionemangiato = arrivo0/10 * 10 + partenza0 % 10;
+			System.out.println("partenza0:" + partenza0 + ", arrivo0:" + arrivo0 +
+					", partenza:" + partenza + ", arrivo:" + arrivo + ", pos mang:" + posizionemangiato);
+			scacchiera[convertitore(posizionemangiato)]=null;
+		}
+		// eseguo lo spostamento effettivo
 		scacchiera[arrivo]=attuale;
+
 	}
 	
 	@Override

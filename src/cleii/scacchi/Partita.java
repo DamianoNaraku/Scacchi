@@ -1,9 +1,14 @@
 package cleii.scacchi;
 
+import java.util.ArrayList;
+
+import cleii.scacchi.pezzi.Pezzo;
+
 public class Partita {
 	public Stato s;
 	public Scacchiera mosse;
 	public boolean incorso, vittoriabianco, vittorianero, patta;
+	private ArrayList<Integer> listamosse; //per controllare patta per tripliceripetizione
 	
 	public Partita() {
 		s= new Stato();
@@ -11,18 +16,20 @@ public class Partita {
 		vittoriabianco= false;
 		vittorianero= false;
 		patta= false;
+		listamosse= new ArrayList<Integer>();
 	}
 	
 	public void eseguiMossa (int from, int to, int promozione) throws EccezioneMossa {
 		if (!incorso) {
 			return;
 		}
-		Pezzo corrente= mosse.get(from);
-		if (!corrente.mossaValida(from, to, promozione)) {
+		// eseguimossa non la esegue se la mossa non e valida, altrimenti la esegue e non serve fare altro
+		if (!s.eseguiMossa(from, to, promozione)) { // esegue sia il controllo che l'esecuzione della mossa
 			throw new EccezioneMossa();
 		}
 		else {
-			s.sca.set(from, to, promozione);
+			// la mossa e stata eseguita e la salvo tra le mosse eseguite
+			listamosse.add(from * 100*100 + to*100 + promozione);
 		}
 	}
 	
@@ -41,31 +48,19 @@ public class Partita {
 	}
 	
 	public boolean inCorso() {
-		if (incorso) {
-			return true;
-		}
-		return false;
+		return this.incorso;
 	}
 	
 	public boolean vittoriaBianco() {
-		if (vittoriabianco) {
-			return true;
-		}
-		return false;
+		return this.vittoriabianco;
 	}
 	
 	public boolean vittoriaNero() {
-		if (vittorianero) {
-			return true;
-		}
-		return false;
+		return this.vittorianero;
 	}
 	
 	public boolean patta() {
-		if (patta) {
-			return true;
-		}
-		return false;
+		return this.patta;
 	}
 	
 }
