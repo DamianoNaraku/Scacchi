@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import cleii.scacchi.pezzi.Pezzo;
-import cleii.scacchi2.Partita2;
 
 public class Test {
 	private Partita partita;
