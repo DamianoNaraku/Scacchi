@@ -1,6 +1,7 @@
 package cleii.scacchi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cleii.scacchi.pezzi.Pezzo;
 
@@ -8,7 +9,7 @@ public class Partita {
 	public Stato s;
 	public Scacchiera mosse;
 	public boolean incorso, vittoriabianco, vittorianero, patta;
-	public ArrayList<Stato> listamosse; //per controllare patta per tripliceripetizione
+	public ArrayList<String> statiscacchiera; //per controllare patta per tripliceripetizione
 	
 	public Partita() {
 		this.s= new Stato();
@@ -16,7 +17,7 @@ public class Partita {
 		this.vittoriabianco= false;
 		this.vittorianero= false;
 		this.patta= false;
-		this.listamosse= new ArrayList<Stato>();
+		this.statiscacchiera= new ArrayList<String>();
 	}
 	
 	public void eseguiMossa (int from, int to, int promozione) throws EccezioneMossa {
@@ -27,18 +28,34 @@ public class Partita {
 		if (!s.eseguiMossa(from, to, promozione)) {//esegue sia il controllo che l'esecuzione della mossa
 			throw new EccezioneMossa();
 		}
-		else {
-			//Aggiorno la lista degli stati
-			listamosse.add(new Stato(this.s)); //salvo copie dello stato corrente
-			//Ora controlliamo se c'e' patta per triplice ripetizione
-			if (listamosse.size()>=6) {//le prime 6 mosse non possono mai generare patta per triplice ripet
-				if ()
+		//Aggiorno la lista degli stati
+		String nuovascacchiera = this.s.sca.toString();
+		 //le prime 6 mosse non possono mai generare patta per triplice ripetizione
+		if (statiscacchiera.size() > 6) {
+			// conto quante volte lo stato attuale si e gia verificato
+			int copie = 1;
+			for(String scacchierastring: statiscacchiera) {
+				if (nuovascacchiera.equals(scacchierastring)) {
+					if (++copie == 3) {
+						// se arrivo a 3 e triplice ripetizione e fermo la partita
+						System.out.println("patta per triplice ripetizione");
+						this.patta = true;
+						this.incorso = false;
+						return;
+					}
+				}
 			}
 		}
+		statiscacchiera.add(nuovascacchiera); //salvo una copia della scacchiera corrente
+		this.s.turno = !this.s.turno; //cambio da turno del bianco a turno del nero e viceversa
+		this.s.stallo();
+		this.s.scaccoMatto();
 	}
 	
 	public void eseguiMossa (int from, int to) throws EccezioneMossa{
 		eseguiMossa(from, to, 0);
+		this.s.scaccoMatto();
+		this.s.stallo();
 	}
 	
 	public void abbandona() {

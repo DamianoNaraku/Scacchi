@@ -89,10 +89,10 @@ public class Scacchiera {
 			switch(promozione) {//Caso in cui ci sia la promozione del pedone
 //Prima vede il colore di attuale (con attuale.bianco), solo dopo gli da il nuovo valore quindi
 //non ci sono problemi
-			case 0: attuale = new Regina(attuale.bianco); break;
-			case 1: attuale = new Cavallo(attuale.bianco); break;
-			case 2: attuale = new Alfiere(attuale.bianco); break;
-			case 3: attuale = new Torre(attuale.bianco); break;
+				case 0: attuale = new Regina(attuale.bianco); break;
+				case 1: attuale = new Cavallo(attuale.bianco); break;
+				case 2: attuale = new Alfiere(attuale.bianco); break;
+				case 3: attuale = new Torre(attuale.bianco); break;
 			}
 		}
 		Torre arroccoeventuale = null;
@@ -101,9 +101,10 @@ public class Scacchiera {
 		// spostare anche la torre verso cui sta arroccando
 		// se arrivo a chiamare questa funzione allora la mossa e valida per forza
 		// quindi posso saltere i controlli sull'arrocco
-		System.out.println("spostamento di:" + Math.abs(partenza0 - arrivo0) + " e re?" + (attuale instanceof Re));
+		//System.out.println("spostamento di:" + Math.abs(partenza0 - arrivo0)
+		// + " e' re?" + (attuale instanceof Re));
 		if (attuale instanceof Re && Math.abs(partenza0 - arrivo0) >= 20) {
-			System.out.println("arrocco eseguito");
+			// System.out.println("arrocco eseguito");
 			// se mi sto spostando a sinistra devo prendere la torre più a sinistra
 			// che ha la stessa unita del re ma ha "1" come decina, altrimenti l'altra ha "8"
 			if (partenza0 - arrivo0 > 0) {
@@ -135,8 +136,6 @@ public class Scacchiera {
 		if (attuale instanceof Pedone && null == this.scacchiera[arrivo]) {
 			// il pezzo mangiato e nella casa con unita (rigo) di partenza e decina(colonna) di arrivo
 			int posizionemangiato = arrivo0/10 * 10 + partenza0 % 10;
-			System.out.println("partenza0:" + partenza0 + ", arrivo0:" + arrivo0 +
-					", partenza:" + partenza + ", arrivo:" + arrivo + ", pos mang:" + posizionemangiato);
 			scacchiera[convertitore(posizionemangiato)]=null;
 		}
 		// eseguo lo spostamento effettivo

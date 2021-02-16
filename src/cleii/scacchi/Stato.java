@@ -24,18 +24,22 @@ public class Stato {
 	
 //Costruttore aggiunto da me per creare una copia dello stato, da usare per simulaspostamentoocattura
 	public Stato(Stato s) {
-		this.sca= new Scacchiera(s.sca);
+		this.sca = new Scacchiera(s.sca);
+		this.partita = s.partita;
 		this.turno= s.turno;
 		this.arroccobianco= s.arroccobianco;
 		this.arrocconero= s.arrocconero;
 		this.enpassantbianco= s.enpassantbianco;
 		this.enpassantnero= s.enpassantnero;
+		this.enpassantvittima = s.enpassantvittima;
 		this.turnisenzacattura= 0;
 	}
 	
 	public boolean sottoAttacco (int pos, boolean white) {
 		Pezzo corrente= this.sca.get(pos);
+		// System.out.println("sottoattacco (" + pos + " , " + white + ")");
 		if (corrente.bianco==white) {
+			// System.out.println("false stessocolore");
 			return false; //se la casa e occupata da un pezzo dello stesso colore e falso
 		}               //e ridondante perche lo controllo anche con attacco, ma se viene 
 		//scoperto adesso c'e' un risparmio in termini di efficienza
@@ -46,8 +50,9 @@ public class Stato {
 //ho preso sca.pezzidelgiocatore perche pezzidelgiocatore e un metodo della classe Scacchiera
 //e la scacchiera in Stato e contenuta nella variabile "sca"
 		for(int posizione: pezzidelgiocatore) {
-			Pezzo attaccantepotenziale= this.sca.get(posizione);
+			Pezzo attaccantepotenziale = this.sca.get(posizione);
 			if (attaccantepotenziale.attacco(this, pos)) {
+				// System.out.println("attaccabile da " + posizione);
 				return true;     //se attacco risulta vero ritorno true
 			}
 		}
@@ -55,36 +60,56 @@ public class Stato {
 	}
 	
 	public boolean scacco () {
-		int pos;
-		if(turno) {//se turno e true cioe e il turno del bianco prendo la posizione del re bianco
-			pos= this.sca.getPos(rebianco);
+		Re re;
+		if (this.turno) {//se turno e true cioe e il turno del bianco prendo la posizione del re bianco
+			re = rebianco;
 		}
 		else {//altrimenti e il turno del nero e quindi prendo la posizione del re nero
-			pos= this.sca.getPos(renero);
+			re = renero;
 		} //sottoattacco dice se il pezzo in pos cioe il re e sotto scacco
-		return sottoAttacco(pos, turno); 
+		int pos = this.sca.getPos(re);
+		// System.out.println("scacco check sottoattacco(" + pos + ", " + !re.bianco);
+		return sottoAttacco(pos, !re.bianco);
 	}
-	
+
+	// non richiesta e scritta per test, forza uno spostamento ignorando le regole del gioco ed i turni
+	public void forzaMossa(int from, int to, int promozione) {
+		this.sca.set(from, to, promozione, false);
+	}
+
 	public boolean scaccoMatto () {
 		if (!this.scacco()) {
 			return false;
 		}
-		if(turno) { //Aggiorno vittoriabianco e vittorianero e faccio terminare la partita
-			this.partita.vittoriabianco=true;
+		if (!this.salvataggiofallito()) {
+			// se esiste una mossa che salva il re non e matto
+			return false;
 		}
-		else {
-			this.partita.vittorianero=true;
+		//adesso e sicuramente matto
+		this.partita.incorso = false; //Col matto la partita si chiude, non e piu in corso
+		System.out.println("scacco matto");
+		if (null != this.partita) {
+			// se e una simulazione this.partita e' null
+			if(turno) { //Aggiorno vittoriabianco e vittorianero e faccio terminare la partita
+				this.partita.vittorianero = true;
+			}
+			else {
+				this.partita.vittoriabianco = true;
+			}
 		}
-		this.partita.incorso= false; //Col matto la partita si chiude, non e piu in corso
-		return this.salvataggiofallito();
+		return true;
 	}	
 	
 	public boolean stallo () {
 		if (this.scacco()) {
 			return false;
-		} 
-		this.partita.patta= true;//Con lo stallo e patta, e la partita non e piu in corso, termina
-		this.partita.incorso= false;
+		}
+		System.out.println("stallo");
+		if (null != this.partita) {
+			// se e una simulazione this.partita e null
+			this.partita.patta = true;//Con lo stallo e patta, e la partita non e piu in corso, termina
+			this.partita.incorso = false;	
+		}
 		return this.salvataggiofallito();
 	}
 	
@@ -108,8 +133,8 @@ public class Stato {
 	public Stato simulaSpostamentoOCattura (int from, int to, int promozione) {
 		if (!this.mossaValida(from, to, promozione)) {
 			return null;	
-			}	
-		Stato simulazione= new Stato(this);
+		}	
+		Stato simulazione = new Stato(this);
 		// true alla fine perche sto simulando e non devo settare "estatospostato" dentro il pezzo
 		// vedere set dentro scacchiere per chiarimento
 		simulazione.eseguiMossa(from, to, promozione, true);
@@ -121,10 +146,14 @@ public class Stato {
 	}
 	
 	private boolean mossaValida (int from, int to, int promozione) {
+		if (null != this.partita && !this.partita.incorso) {
+			System.err.println("La partita è conclusa");
+			return false;
+		}
 		Pezzo corrente = this.sca.get(from);
 		// se il pezzo non esiste o non e del giocatore di turno
 		if (null==corrente || this.turno != corrente.bianco) {
-			System.err.println("non e il turno di quel giocatore o il pezzo non esiste");
+			System.err.println("non è il turno di quel giocatore o il pezzo non esiste");
 			return false;
 		}
 		ArrayList<Integer> attacchipossibili = corrente.listaAttacco(this);
@@ -184,17 +213,16 @@ da fare e se promozione e un input valido cioe da 0 a 3. Il controllo sarebbe co
 		
 		
 		if (mosso instanceof Pedone || casapiena) {//se il pezzo mosso e' un pedone o c'e stata cattura 
-			turnisenzacattura=0; //in una casa dove c'era un pezzo (piena), azzerro turnisenzacattura
+			turnisenzacattura = 0; //in una casa dove c'era un pezzo (piena), azzerro turnisenzacattura
 		}
 		else {
 			turnisenzacattura++; //altrimenti aumento il conteggio
+			if (turnisenzacattura>=50) {
+				System.out.println("patta per 50 turni senza catture");
+				this.partita.patta = true;
+				this.partita.incorso = false;
+			}
 		}
-		
-		if (turnisenzacattura>=50) {
-			this.partita.patta= true;
-		}
-		
-		this.turno = !this.turno; //cambio da turno del bianco a turno del nero e viceversa
 		return true;
 	}
 
