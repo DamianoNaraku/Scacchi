@@ -9,7 +9,7 @@ public abstract class Pezzo {
 	public boolean estatomosso; //per pedone, re e torre serve vedere se sono gia stati spostati
 	
 	public Pezzo(boolean p, String nome){
-		this.bianco=p;
+		this.bianco=!p;
 		this.estatomosso = false;
 		if(this.bianco) { //Crea anche la stringa che dice come si chiama il pezzo
 			this.nomepezzo=nome;

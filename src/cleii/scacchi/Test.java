@@ -12,13 +12,8 @@ public class Test {
 		Scacchiera s =new Scacchiera();
 		System.out.println(s);
                 
-        System.out.println("\nposizioni:\n" + s.getPositions(false, false) + 
-        		"\n\n"+ s.getPositions(true, false));
-
         new Test();
-        
 	}
-
 
 	public Test() {
 		this.partita = new Partita();
@@ -33,7 +28,6 @@ public class Test {
 		while (true) {
 			String fullcommand = s.nextLine();
 			this.eseguiComando(fullcommand);
-
 		}
 	}
 
@@ -109,7 +103,7 @@ public class Test {
 			}
 			if (null == posizioni)
 				break;
-			System.out.println(this.partita.s.sca.evidenziaPosizioni(posizioni, from));
+			//System.out.println(this.partita.s.sca.evidenziaPosizioni(posizioni, from));
 			break;
 		case "forza":
 		case "f":

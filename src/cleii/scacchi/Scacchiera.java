@@ -11,10 +11,10 @@ public class Scacchiera {
 		for (int j=0; j<2; j++) {
 			//Creo bn che dice se e bianco o nero
 			boolean bn=(j==0); //al primo turno j vale 0 e quindi bn e true, al secondo j=1 e allora bn= false
-			int k=0; //Quando faccio le case del bianco, k parte da 0 quindi k+i=i
+			int k=0; //Quando faccio le case del bianco, k parte da 56
 			int p=0;
-			if(j==1) {//al secondo turno vanno fatte le case del nero, e quindi si prende la casella k+i che parte
-				k=56; // da 45, quindi do questo nuovo valore a k
+			if(j==0) {//al secondo turno vanno fatte le case del nero, e quindi si prende la casella k+i che parte
+				k=56; // da i, quindi do questo nuovo valore a k
 				p=40; //Dato che i pedoni partono da posizioni diverse per bianco e nero, serve un-altra variabile
 			}
 			for (int i=0; i<=15; i++) {
@@ -162,43 +162,5 @@ public class Scacchiera {
 		}
 		return s.toString();  //faccio cosi perche s e uno stringbuilder e invece deve ritornare una stringa
 	}
- 
-//Non richiesto, serve per vedere se i numeri sono convertiti in "base 8" (boolean inbase8) e
-//poi se e stato riconvertito con convertitoreinverso (boolean doppiaconversione)
-//Serve anche per stampare il numero di caselle in entrambe le coordinate
-    public String getPositions(boolean inbase8, boolean doppiaconversione){
-            StringBuilder s = new StringBuilder(); 
-            for (int i = 0; i < this.scacchiera.length; i++) {
-                    s.append('|');
-                    if (!inbase8 && i < 10) s.append(' ');
-                    s.append( doppiaconversione ? this.convertitore(this.convertitoreinverso(i)) : (inbase8 ? this.convertitoreinverso(i) : i));
-		if (i%8==7) {  //deve andare a capo se arrivo all-ottava casa, ma l-ottava e dove i=7, quindi
-			           //il numero diviso 8 deve dare resto 7 es casa 7: 7/8 da resto 7, 15/8 da 1 resto 7...
-			s.append('|');
-			s.append('\n');
-		}
-            }
-            return s.toString();
-    }
 
-//Visualizza sulla scacchiera le posizioni dell'array, non richiesto ma utile per verificare
- //la correttezza di altre cose
-	public String evidenziaPosizioni(ArrayList<Integer> posizioni, int centro) {
-		StringBuilder s = new StringBuilder();
-		for (int i=0; i<64; i++) {
-			int posizione = this.convertitoreinverso(i);
-			boolean evidenziato = posizioni.contains(posizione);
-			if (posizione == centro) { s.append('X'); }
-			else if (null==this.scacchiera[i]) { s.append( evidenziato ? ' ' : '-'); }
-		    else {
-		    	s.append( evidenziato ? '°' : this.scacchiera[i].toString());
-		    }
-			if (i%8==7) {
-				s.append('\n');
-			} else {
-				s.append('|');
-			}
-		}
-		return s.toString();
-	}
 }

@@ -10,6 +10,7 @@ public class Partita {
 	public Scacchiera mosse;
 	public boolean incorso, vittoriabianco, vittorianero, patta;
 	public ArrayList<String> statiscacchiera; //per controllare patta per tripliceripetizione
+	//Invece il controllo per 50 mosse senza mangiare si trova in Stato
 	
 	public Partita() {
 		this.s= new Stato();
@@ -28,6 +29,7 @@ public class Partita {
 		if (!s.eseguiMossa(from, to, promozione)) {//esegue sia il controllo che l'esecuzione della mossa
 			throw new EccezioneMossa();
 		}
+		System.out.println("Turno del bianco="+s.turno);
 		//Aggiorno la lista degli stati
 		String nuovascacchiera = this.s.sca.toString();
 		 //le prime 6 mosse non possono mai generare patta per triplice ripetizione
@@ -37,19 +39,21 @@ public class Partita {
 			for(String scacchierastring: statiscacchiera) {
 				if (nuovascacchiera.equals(scacchierastring)) {
 					if (++copie == 3) {
-						// se arrivo a 3 e triplice ripetizione e fermo la partita
-						System.out.println("patta per triplice ripetizione");
+						// se arrivo a 3 si ha triplice ripetizione e fermo la partita
+						System.out.println("Possibile patta per triplice ripetizione");
 						this.patta = true;
-						this.incorso = false;
+						this.incorso = false; //In realta dipende dalla scelta dei giocatori se
+//continuare o finire in patta, ma per farlo bisognerebbe anche prendere un input dall-utente finale
+//e non si puo importare Scanner quindi ho semplificato facendo finire la partita e basta
 						return;
 					}
 				}
 			}
 		}
 		statiscacchiera.add(nuovascacchiera); //salvo una copia della scacchiera corrente
-		this.s.turno = !this.s.turno; //cambio da turno del bianco a turno del nero e viceversa
 		this.s.stallo();
 		this.s.scaccoMatto();
+		this.s.turno = !this.s.turno; //cambio da turno del bianco a turno del nero e viceversa
 	}
 	
 	public void eseguiMossa (int from, int to) throws EccezioneMossa{

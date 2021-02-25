@@ -85,7 +85,7 @@ public class Re extends Pezzo{
 			// controllo se ci sono pezzi tra la posizione de re e della torre vicina
 			cisonopezziinmezzo = false;
 			for (int posintermedia = posizione - 10; posintermedia > posizionetorrelontana; posintermedia-=10) {
-				if ( null != s.sca.get(posintermedia) ) {
+				if (null != s.sca.get(posintermedia) ) {
 					cisonopezziinmezzo = true;
 					break;
 				}

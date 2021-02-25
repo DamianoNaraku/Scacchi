@@ -29,7 +29,7 @@ public class Alfiere extends Pezzo{
 					int nuovaposizione = posizione + distanza * direzione1 * 10 + distanza * direzione2;
 					if (nuovaposizione / 10 < 1 || nuovaposizione / 10 > 8
 							|| nuovaposizione % 10 < 1 || nuovaposizione % 10 > 8) {
-						// se la posizione uscirebbe fuori dalla scacchiera mi fermo e cambio direzione.
+						// se la posizione e fuori dalla scacchiera mi fermo e cambio direzione.
 						break;
 					}
 					// aggiungo la posizione valida agli attacchi

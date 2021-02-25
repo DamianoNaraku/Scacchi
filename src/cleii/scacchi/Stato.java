@@ -18,7 +18,7 @@ public class Stato {
 	
 	public Stato(){
 		sca= new Scacchiera();
-		turno= true; //all'inizio tocca al bianco che e true
+		turno= false; //all'inizio tocca al bianco che e true
 		arroccobianco= arrocconero= enpassantbianco= enpassantnero= true; // possono arroccare e fare enpassant
 	}
 	
@@ -61,14 +61,14 @@ public class Stato {
 	
 	public boolean scacco () {
 		Re re;
-		if (this.turno) {//se turno e true cioe e il turno del bianco prendo la posizione del re bianco
+		if (!this.turno) {//se turno e true cioe e il turno del bianco prendo la posizione del re bianco
 			re = rebianco;
 		}
 		else {//altrimenti e il turno del nero e quindi prendo la posizione del re nero
 			re = renero;
 		} //sottoattacco dice se il pezzo in pos cioe il re e sotto scacco
 		int pos = this.sca.getPos(re);
-		// System.out.println("scacco check sottoattacco(" + pos + ", " + !re.bianco);
+		 System.out.println("scacco check sottoattacco(" + pos + ", " + !re.bianco);
 		return sottoAttacco(pos, !re.bianco);
 	}
 
@@ -87,16 +87,16 @@ public class Stato {
 		}
 		//adesso e sicuramente matto
 		this.partita.incorso = false; //Col matto la partita si chiude, non e piu in corso
-		System.out.println("scacco matto");
 		if (null != this.partita) {
 			// se e una simulazione this.partita e' null
-			if(turno) { //Aggiorno vittoriabianco e vittorianero e faccio terminare la partita
+			if(!turno) { //Aggiorno vittoriabianco e vittorianero e faccio terminare la partita
 				this.partita.vittorianero = true;
 			}
 			else {
 				this.partita.vittoriabianco = true;
 			}
 		}
+		System.out.println("Matto");
 		return true;
 	}	
 	
@@ -104,7 +104,6 @@ public class Stato {
 		if (this.scacco()) {
 			return false;
 		}
-		System.out.println("stallo");
 		if (null != this.partita) {
 			// se e una simulazione this.partita e null
 			this.partita.patta = true;//Con lo stallo e patta, e la partita non e piu in corso, termina
@@ -220,7 +219,9 @@ da fare e se promozione e un input valido cioe da 0 a 3. Il controllo sarebbe co
 			if (turnisenzacattura>=50) {
 				System.out.println("patta per 50 turni senza catture");
 				this.partita.patta = true;
-				this.partita.incorso = false;
+				this.partita.incorso = false; //in realta i giocatori possono decidere se 
+//continuare o far finire in patta, ma per chiederlo bisognerebbe far fare un input all-utente 
+//finale e non potendo importare Scanner ho fatto finire la partita e basta
 			}
 		}
 		return true;
