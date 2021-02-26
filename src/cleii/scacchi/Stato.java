@@ -58,18 +58,24 @@ public class Stato {
 		}
 		return false;
 	}
-	
+
 	public boolean scacco () {
+		return this.scacco(this.turno);
+	}
+
+	public boolean scacco (boolean turno) {
 		Re re;
-		if (!this.turno) {//se turno e true cioe e il turno del bianco prendo la posizione del re bianco
+		if (turno) {//se turno e true cioe e il turno del bianco prendo la posizione del re bianco
 			re = rebianco;
 		}
 		else {//altrimenti e il turno del nero e quindi prendo la posizione del re nero
 			re = renero;
 		} //sottoattacco dice se il pezzo in pos cioe il re e sotto scacco
 		int pos = this.sca.getPos(re);
-		 System.out.println("scacco check sottoattacco(" + pos + ", " + !re.bianco);
-		return sottoAttacco(pos, !re.bianco);
+		boolean scacco = sottoAttacco(pos, !re.bianco); 
+		System.out.println("scacco check sottoattacco(" + pos + ", " + !re.bianco + "turno" + turno + ") = " + scacco);
+		if (scacco) System.out.println("scacco al " + (!re.bianco ? "bianco" : "nero"));
+		return scacco;
 	}
 
 	// non richiesta e scritta per test, forza uno spostamento ignorando le regole del gioco ed i turni
@@ -86,8 +92,8 @@ public class Stato {
 			return false;
 		}
 		//adesso e sicuramente matto
-		this.partita.incorso = false; //Col matto la partita si chiude, non e piu in corso
 		if (null != this.partita) {
+			this.partita.incorso = false; //Col matto la partita si chiude, non e piu in corso
 			// se e una simulazione this.partita e' null
 			if(!turno) { //Aggiorno vittoriabianco e vittorianero e faccio terminare la partita
 				this.partita.vittorianero = true;
@@ -96,7 +102,7 @@ public class Stato {
 				this.partita.vittoriabianco = true;
 			}
 		}
-		System.out.println("Matto");
+		System.out.println("È Matto");
 		return true;
 	}	
 	
@@ -109,23 +115,32 @@ public class Stato {
 			this.partita.patta = true;//Con lo stallo e patta, e la partita non e piu in corso, termina
 			this.partita.incorso = false;	
 		}
-		return this.salvataggiofallito();
+		boolean ret = this.salvataggiofallito();
+		if (ret) System.out.println("è stallo");
+		return ret;
 	}
 	
 	//Metodo aggiuntivo che controlla se e' sicuro che nessun pezzo puo salvare il re
 	private boolean salvataggiofallito () {
-		ArrayList<Integer> pezzigiocatore= this.sca.pezzidelgiocatore(turno);
+		this.turno = !this.turno; // fingo che sia già il prossimo turno
+		boolean salvabile = false;
+		ArrayList<Integer> pezzigiocatore = this.sca.pezzidelgiocatore(this.turno);
 		for (int posizione: pezzigiocatore) {
 			Pezzo attuale= this.sca.get(posizione);
-			ArrayList<Integer> caseraggiungibili= attuale.listaAttacco(this);
+			ArrayList<Integer> caseraggiungibili = attuale.listaAttacco(this);
 			for (int spostamento: caseraggiungibili) {
 				Stato tentativosalvataggio = 
 						this.simulaSpostamentoOCattura(posizione, spostamento, 0);
-				if(!tentativosalvataggio.scacco()) {
+				System.out.println("    tento salvataggio: " + posizione + " " + spostamento + tentativosalvataggio);
+				if(null != tentativosalvataggio && !tentativosalvataggio.scacco(!this.turno)) {
+					System.out.println("salvataggiofallito? NO: può salvarsi spostando:" + posizione + " " + spostamento);
+					this.turno = !this.turno;
 					return false; //non e fallito se esiste un tentativo di salvataggio che
 				}    //non genera uno scacco
 			}
 		}
+		this.turno = !this.turno;
+		System.out.println("salvataggiofallito? SI: è stallo o matto");
 		return true;
 	}
 	
@@ -147,12 +162,16 @@ public class Stato {
 	private boolean mossaValida (int from, int to, int promozione) {
 		if (null != this.partita && !this.partita.incorso) {
 			System.err.println("La partita è conclusa");
-			return false;
+			// return false;
 		}
 		Pezzo corrente = this.sca.get(from);
 		// se il pezzo non esiste o non e del giocatore di turno
 		if (null==corrente || this.turno != corrente.bianco) {
-			System.err.println("non è il turno di quel giocatore o il pezzo non esiste");
+			if (null != this.partita) {
+				// se e una simulazione partita e null e non stampa
+				System.err.println("non è il turno di quel giocatore o il pezzo non esiste");	
+			}
+			
 			return false;
 		}
 		ArrayList<Integer> attacchipossibili = corrente.listaAttacco(this);

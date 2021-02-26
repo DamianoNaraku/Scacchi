@@ -13,6 +13,8 @@ public class Test {
 		System.out.println(s);
                 
         new Test();
+        System.out.println("\nposizioni:\n" + s.getPositions(false, false) + 
+        		"\n\n"+ s.getPositions(true, false));
 	}
 
 	public Test() {
@@ -101,9 +103,8 @@ public class Test {
 					};
 					break;
 			}
-			if (null == posizioni)
-				break;
-			//System.out.println(this.partita.s.sca.evidenziaPosizioni(posizioni, from));
+			if (null == posizioni) break;
+			System.out.println(this.partita.s.sca.evidenziaPosizioni(posizioni, from));
 			break;
 		case "forza":
 		case "f":
@@ -150,11 +151,19 @@ public class Test {
 				this.comandoinvalido(e.getMessage());
 				break;
 			}
+			if (!this.partita.incorso) {
+				System.out.print("la partita è terminata, vittoria del ");
+				if (!this.partita.vittoriabianco) System.out.println("bianco");
+				else System.out.println("nero");
+				break;
+			}
 			try {
 				this.partita.eseguiMossa(from, to, promozione);
 				System.out.println("Mossa eseguita!\n" + this.partita.s.sca);
 			} catch (EccezioneMossa e) {
+				System.out.flush();
 				System.err.println("mossa invalida! " + e);
+				System.out.println("puoi continuare a giocare.");
 			}
 			break;
 		}

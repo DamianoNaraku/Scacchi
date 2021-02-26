@@ -51,6 +51,7 @@ public class Partita {
 			}
 		}
 		statiscacchiera.add(nuovascacchiera); //salvo una copia della scacchiera corrente
+		this.s.partita = this;
 		this.s.stallo();
 		this.s.scaccoMatto();
 		this.s.turno = !this.s.turno; //cambio da turno del bianco a turno del nero e viceversa
@@ -64,7 +65,7 @@ public class Partita {
 	
 	public void abbandona() {
 		this.incorso= false;
-		if (s.turno) {
+		if (!s.turno) {
 			vittorianero= true;
 		}
 		else {
